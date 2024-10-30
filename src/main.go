@@ -95,7 +95,7 @@ func healthcheck(db *sql.DB, redis *redis.Client) string {
 
   // Check database connection
   if err := db.Ping(); err != nil {
-    fmt.Println("db.Ping() error: %v", err)
+    fmt.Printf("db.Ping() error: %v\n", err)
     database = "error"
   } else {
     database = "ok"
@@ -103,7 +103,7 @@ func healthcheck(db *sql.DB, redis *redis.Client) string {
 
   // Check cache connection
   if _, err := redis.Ping(ctx).Result(); err != nil {
-    fmt.Println("db.Ping() error: %v", err)
+    fmt.Printf("db.Ping() error: %v\n", err)
     cache = "error"
     } else {
     cache = "ok"
@@ -162,7 +162,7 @@ func stats(rc *redis.Client) string {
 
 	jsonData, err := json.Marshal(visits)
 	if err != nil {
-		fmt.Println("Could not convert to JSON: %v", err)
+		fmt.Printf("Could not convert to JSON: %v\n", err)
 	}
 
 	return fmt.Sprintf(string(jsonData))
@@ -189,7 +189,7 @@ func pgstats(db *sql.DB) string {
 
 	jsonData, err := json.Marshal(pgstats)
 	if err != nil {
-		fmt.Println("Could not convert to JSON: %v", err)
+		fmt.Printf("Could not convert to JSON: %v\n", err)
 	}
 
 	return fmt.Sprintf(string(jsonData))
@@ -248,10 +248,11 @@ func main() {
     }
   })
 
+  // Start the web server
   fmt.Println("Starting server on port 8000")
   err = http.ListenAndServe(":8000", mux)
   if err != nil {
-    fmt.Println("server error: %v", err)
+    fmt.Printf("server error: %s\n", err)
     panic(err)
   }
 }

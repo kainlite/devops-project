@@ -1,4 +1,4 @@
-# Build stage
+### Build stage
 FROM golang:1.23 AS build
 
 WORKDIR /app
@@ -15,7 +15,11 @@ RUN groupadd --gid 1000 appgroup && \
     useradd -u 1000 appuser && \
     chown -R 1000:1000 /app
 
-# Final image from scratch
+### Test stage
+FROM build as test
+RUN go test -v ./...
+
+### Final image from scratch
 FROM scratch
 
 WORKDIR /app
