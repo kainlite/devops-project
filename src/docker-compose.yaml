@@ -1,0 +1,73 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_USER=${POSTGRES_USER}
+      - DATABASE_PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE_NAME=${POSTGRES_DB}
+      - DATABASE_PORT=${POSTGRES_PORT}
+      - DATABASE_HOST=db
+      - REDIS_HOST=cache
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - cache
+    develop:
+      watch:
+        - action: sync
+          target: /app
+          path: .
+        - action: rebuild
+          path: main.go
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+    networks:
+      - devops-project
+
+  db:
+    image: postgres:17-alpine
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 500M
+    volumes:
+      - pg-data:/var/lib/pgdata
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - devops-project
+
+  cache:
+    image: redis:7-alpine
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 500M
+    volumes: 
+      - cache:/data
+    ports:
+      - 6379:6379
+    networks:
+      - devops-project
+
+volumes:
+  pg-data:
+  cache:
+
+networks:
+  devops-project:
