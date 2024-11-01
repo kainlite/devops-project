@@ -22,8 +22,6 @@ spec:
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
-      imagePullSecrets:
-      - name: regcred
       containers:
       - name: devops-project
         image: kainlite/devops-project:latest
