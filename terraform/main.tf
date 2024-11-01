@@ -22,12 +22,12 @@ module "vpc" {
   enable_dns_hostnames = true
 
   public_subnet_tags = {
-    "kubernetes.io/role/elb" = 1
+    "kubernetes.io/role/elb"                    = 1
     "kubernetes.io/cluster/${local.prefix}-eks" = "owned"
   }
 
   private_subnet_tags = {
-    "kubernetes.io/role/internal-elb" = 1
+    "kubernetes.io/role/internal-elb"           = 1
     "kubernetes.io/cluster/${local.prefix}-eks" = "owned"
   }
 
@@ -40,7 +40,7 @@ module "eks" {
   cluster_name    = "${local.prefix}-eks"
   cluster_version = "1.31"
 
-  endpoint_public_access  = true
+  endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets

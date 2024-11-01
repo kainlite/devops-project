@@ -4,8 +4,8 @@ resource "aws_db_instance" "this" {
   engine               = "postgres"
   engine_version       = "17"
   instance_class       = var.db_instance_class # "db.t3.micro"
-  username             = var.db_username # "postgres"
-  password             =  random_password.password.result
+  username             = var.db_username       # "postgres"
+  password             = random_password.password.result
   parameter_group_name = "default.postgres17.0"
   skip_final_snapshot  = true
   tags                 = var.tags

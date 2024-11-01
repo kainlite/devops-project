@@ -30,8 +30,8 @@ resource "aws_eks_cluster" "this" {
 
   vpc_config {
     endpoint_public_access = var.endpoint_public_access
-    vpc_id = var.vpc_id
-    subnet_ids = flatten(concat(var.subnet_ids))
+    vpc_id                 = var.vpc_id
+    subnet_ids             = flatten(concat(var.subnet_ids))
   }
 
   tags = var.tags

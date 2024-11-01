@@ -16,7 +16,7 @@ RUN groupadd --gid 1000 appgroup && \
     chown -R 1000:1000 /app
 
 ### Test stage
-FROM build as test
+FROM build AS test
 RUN go test -v ./...
 
 ### Final image from scratch
