@@ -19,13 +19,25 @@ variable "num_cache_nodes" {
 variable "parameter_group_name" {
   description = "The name of the parameter group to associate with this cluster"
   type        = string
-  default     = "default.redis6.2"
+  default     = "default.redis7"
 }
 
 variable "engine_version" {
   description = "The version of the engine to use for the cluster"
   type        = string
-  default     = "6.2"
+  default     = "7.1"
+}
+
+variable "subnet_ids" {
+  description = "The subnet IDs to use for the database"
+  type        = list(string)
+  default     = []
+}
+
+variable "security_group_ids" {
+  description = "The security group IDs to use for the database"
+  type        = list(string)
+  default     = []
 }
 
 variable "tags" {

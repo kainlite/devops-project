@@ -4,10 +4,10 @@ variable "db_size" {
   default     = 5
 }
 
-variable "db_name" {
-  description = "The name of the database"
+variable "instance_name" {
+  description = "The name of the database instance"
   type        = string
-  default     = "default"
+  default     = "dev"
 }
 
 variable "db_instance_class" {
@@ -20,6 +20,30 @@ variable "db_username" {
   description = "The username for the database"
   type        = string
   default     = "postgres"
+}
+
+variable "subnet_ids" {
+  description = "The subnet IDs to use for the database"
+  type        = list(string)
+  default     = []
+}
+
+variable "engine_version" {
+  description = "The version of the engine to use for the database"
+  type        = string
+  default     = "16.3"
+}
+
+variable "parameter_group_name" {
+  description = "The name of the parameter group to use"
+  type        = string
+  default     = "default.postgres16"
+}
+
+variable "vpc_security_group_ids" {
+  description = "The security group IDs to use for the database"
+  type        = list(string)
+  default     = []
 }
 
 variable "tags" {

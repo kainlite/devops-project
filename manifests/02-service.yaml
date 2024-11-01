@@ -3,11 +3,16 @@ kind: Service
 metadata:
   name: devops-project
   namespace: devops-project
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 spec:
+  type: LoadBalancer
   selector:
     name: devops-project
   ports:
     - protocol: TCP
       name: web
-      port: 8000
+      port: 80
       targetPort: 8000

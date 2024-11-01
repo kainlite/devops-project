@@ -146,3 +146,24 @@ resource "aws_network_acl_rule" "private_outbound" {
   protocol    = var.private_outbound_acl_rules[count.index]["protocol"]
   cidr_block  = lookup(var.private_outbound_acl_rules[count.index], "cidr_block", null)
 }
+
+# Allow local traffic
+resource "aws_security_group" "allow_local_traffic" {
+  name        = "allow_local_traffic"
+  description = "Allow inbound traffic and all outbound traffic"
+  vpc_id      = aws_vpc.this.id
+
+  tags = var.tags
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_local_traffic" {
+  security_group_id = aws_security_group.allow_local_traffic.id
+  cidr_ipv4         = aws_vpc.this.cidr_block
+  ip_protocol       = "-1"
+}
+
+resource "aws_vpc_security_group_egress_rule" "allow_local_traffic" {
+  security_group_id = aws_security_group.allow_local_traffic.id
+  cidr_ipv4         = aws_vpc.this.cidr_block
+  ip_protocol       = "-1"
+}

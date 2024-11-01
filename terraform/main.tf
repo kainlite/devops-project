@@ -42,7 +42,6 @@ module "eks" {
 
   endpoint_public_access = true
 
-  vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
   tags = local.tags
@@ -51,10 +50,11 @@ module "eks" {
 module "rds" {
   source = "./modules/rds"
 
-  db_name = "${local.prefix}-rds"
+  instance_name = "${local.prefix}-rds"
 
-  # vpc_id     = module.vpc.vpc_id
-  # subnet_ids = module.vpc.private_subnets
+  subnet_ids = module.vpc.private_subnets
+
+  vpc_security_group_ids = [module.vpc.default_security_group_id]
 
   tags = local.tags
 }
@@ -64,8 +64,9 @@ module "redis" {
 
   cluster_name = "${local.prefix}-redis"
 
-  # vpc_id     = module.vpc.vpc_id
-  # subnet_ids = module.vpc.private_subnets
+  subnet_ids = module.vpc.private_subnets
+
+  security_group_ids = [module.vpc.default_security_group_id]
 
   tags = local.tags
 }

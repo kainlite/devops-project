@@ -23,3 +23,8 @@ output "private_subnets" {
   description = "List of IDs of private subnets"
   value       = aws_subnet.private[*].id
 }
+
+output "default_security_group_id" {
+  description = "The security group that allows local traffic"
+  value       = aws_security_group.allow_local_traffic.id
+}
