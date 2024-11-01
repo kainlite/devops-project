@@ -24,7 +24,7 @@ spec:
         runAsGroup: 1000
       containers:
       - name: devops-project
-        image: kainlite/devops-project:88b8b39
+        image: kainlite/devops-project:replace_me
         envFrom:
         - secretRef:
             name: postgres-config
