@@ -10,12 +10,6 @@ variable "cluster_version" {
   default     = "1.31"
 }
 
-variable "vpc_id" {
-  description = "The VPC ID where the EKS cluster will be deployed"
-  type        = string
-  default     = ""
-}
-
 variable "subnet_ids" {
   description = "A list of subnets inside the VPC"
   type        = list(string)
