@@ -90,7 +90,7 @@ func errlogger(r *http.Request) {
   fmt.Printf("%v\n", string(u))
 }
 
-func healthcheck(db *sql.DB, redis *redis.Client) string {
+func healthcheck(db *sql.DB, redis *redis.Client) (bool, string) {
   var status, database, cache string
 
   // Check database connection
@@ -127,7 +127,7 @@ func healthcheck(db *sql.DB, redis *redis.Client) string {
       panic(err)
   }
 
-  return fmt.Sprintf("%v\n", string(u))
+  return status == "degraded", fmt.Sprintf("%v\n", string(u))
 }
 
 func increment_visits_counter(rc *redis.Client, path string) {
@@ -143,6 +143,7 @@ func increment_visits_counter(rc *redis.Client, path string) {
 }
 
 func stats(rc *redis.Client) string {
+  // TODO: Return early if status is degraded because of redis being down
 	pattern := "page_visits_*"
 	keys, err := rc.Keys(ctx, pattern).Result()
 	if err != nil {
@@ -169,6 +170,7 @@ func stats(rc *redis.Client) string {
 }
 
 func pgstats(db *sql.DB) string {
+  // TODO: Return early if status is degraded because of postgres being down
   rows, err := db.Query("SELECT COALESCE(usename, ''), COALESCE(datname, ''), client_addr, COALESCE(state, '') FROM pg_stat_activity;")
   if err != nil {
     fmt.Println(err)
@@ -192,7 +194,7 @@ func pgstats(db *sql.DB) string {
 		fmt.Printf("Could not convert to JSON: %v\n", err)
 	}
 
-	return fmt.Sprintf(string(jsonData))
+	return string(jsonData)
 }
 
 func main() {
@@ -222,7 +224,13 @@ func main() {
   mux.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
     logger(r)
     increment_visits_counter(redisClient, r.URL.Path)
-    fmt.Fprintf(w, healthcheck(db, redisClient))
+    degraded, result := healthcheck(db, redisClient)
+    if degraded {
+      w.WriteHeader(http.StatusTeapot)
+      fmt.Fprintf(w, result)
+    } else {
+      fmt.Fprintf(w, result)
+    }
   })
 
   mux.HandleFunc("/api/stats", func(w http.ResponseWriter, r *http.Request) {
@@ -241,6 +249,7 @@ func main() {
     increment_visits_counter(redisClient, r.URL.Path)
     if r.URL.Path != "/" {
       errlogger(r)
+      w.WriteHeader(http.StatusNotFound)
       fmt.Fprintf(w, "Error 404")
     } else {
       logger(r)

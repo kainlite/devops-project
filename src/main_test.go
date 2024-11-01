@@ -44,7 +44,7 @@ func TestHealthcheck(t *testing.T) {
 	mockRedis := MockRedis()
 	defer mockRedis.Close()
 
-	result := healthcheck(mockDB, mockRedis)
+	_, result := healthcheck(mockDB, mockRedis)
 	var health Health
 	err := json.Unmarshal([]byte(result), &health)
 	if err != nil {
@@ -54,6 +54,7 @@ func TestHealthcheck(t *testing.T) {
 	if health.Status != "degraded" && health.Status != "ok" {
 		t.Errorf("Unexpected health status: %v", health.Status)
 	}
+
 }
 
 // TestIncrementVisitsCounter tests the increment_visits_counter function.
@@ -108,7 +109,13 @@ func TestHealthHandler(t *testing.T) {
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, healthcheck(mockDB, mockRedis))
+		degraded, result := healthcheck(mockDB, mockRedis)
+		if degraded {
+			w.WriteHeader(http.StatusTeapot)
+			fmt.Fprintf(w, result)
+		} else {
+			fmt.Fprintf(w, result)
+		}
 	})
 
 	handler.ServeHTTP(rr, req)

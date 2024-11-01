@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-project
+  namespace: devops-project
+  labels:
+    name: devops-project
+    app: devops-project
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: devops-project
+  template:
+    metadata:
+      labels:
+        name: devops-project
+        app: devops-project
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: devops-project
+        image: kainlite/devops-project:latest
+        envFrom:
+        - secretRef:
+            name: postgres-config
+        - secretRef:
+            name: redis-config
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        ports:
+        - containerPort: 8000
+        securityContext:
+          allowPrivilegeEscalation: false
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 10

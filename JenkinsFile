@@ -13,16 +13,16 @@ pipeline {
                 )
             }
         }
-        
+
         stage('Running tests with docker') {
             steps {
-                sh 'docker build -f Dockerfile -t devops-project-test --progress plain --no-cache --target test .'
+                sh 'cd src && docker build -f Dockerfile -t devops-project-test --progress plain --no-cache --target test .'
             }
         }
 
         stage('Building docker image') {
             steps {
-                sh 'docker build -t devops-project:${GIT_REVISION,length=7} .'
+                sh 'cd src && docker build -t devops-project:${GIT_REVISION,length=7} .'
             }
         }
 
@@ -36,13 +36,27 @@ pipeline {
             }
         }
 
+        stage('Pushing image to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(
+                  credentialsId: DOCKERHUB_CREDENTIALS, 
+                  usernameVariable: 'DOCKER_USERNAME', 
+                  passwordVariable: 'DOCKER_PASSWORD')
+                ]) {
+                    sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
+                    sh 'docker tag ${PROJECT_NAME}:${GIT_REVISION,length=7} ${DOCKERHUB_REPOSITORY}/${PROJECT_NAME}:${GIT_REVISION,length=7}'
+                    sh 'docker push ${DOCKERHUB_REPOSITORY}/${PROJECT_NAME}:latest'
+                }
+            }
+        }
+
         stage('Fetch config and apply changes') {
             steps {
                 script {
                     withAWS(credentials: 'AWS-CREDENTIALS', region: ${AWS_REGION}) {
                         sh 'aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_REGION}'
-                        sh 'sed -i "s/replace_me/${GIT_REVISION,length=7}/"'
-                        sh 'kubectl apply -f appspec.yaml'
+                        sh 'sed -i "s/replace_me/${GIT_REVISION,length=7}/" manifests/00-appspec.yaml'
+                        sh 'kubectl apply -f manifests/00-appspec.yaml'
                     }
                 }
             }
