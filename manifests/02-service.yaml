@@ -8,11 +8,12 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
     service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     name: devops-project
   ports:
     - protocol: TCP
+      nodePort: 33333
       name: web
       port: 80
       targetPort: 8000

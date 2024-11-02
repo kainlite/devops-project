@@ -21,8 +21,8 @@ resource "aws_db_subnet_group" "this" {
 }
 
 resource "random_password" "password" {
-  length           = 16
-  special          = false
+  length  = 16
+  special = false
 }
 
 resource "aws_db_parameter_group" "this" {
