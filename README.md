@@ -14,6 +14,11 @@ Necessary to host the images.
 ### Terraform
 The terraform code will create a very naive and basic EKS deployment using a single node group that resembles this
 diagram.
+
+Some possible improvements for continuos delivery and deployment:
+* ArgoCD
+  * ArgoCD Image Updater
+  * Kargo (GitOps friendly)
 ![netdiagram](./assets/basic-diagram.png)
 
 ### Monitoring

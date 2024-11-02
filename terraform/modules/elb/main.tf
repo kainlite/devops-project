@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "this" {
   name        = "${var.name}-tg"
   target_type = "ip"
   protocol    = "TCP"
-  port        = 33333
+  port        = 31113
   vpc_id      = var.vpc_id
 }
 

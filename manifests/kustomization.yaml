@@ -2,5 +2,22 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - 01-deployment.yaml
-  - 02-service.yaml
+  - app/00-namespace.yaml
+  - app/01-deployment.yaml
+  - app/02-service.yaml
+  
+  # Example secrets, these should be encrypted with SOPS (kms), or SealedSecrets
+  # app/03-secrets.yaml
+  
+  # helm template redis oci://registry-1.docker.io/bitnamicharts/redis \ 
+  # --set cluster.enabled=false --set cluster.slaveCount=0 --set replica.replicaCount=0
+  - redis/00-namespace.yaml
+  - redis/01-statefulset.yaml
+  - redis/02-netpol.yaml
+  - redis/03-pdb.yaml
+  - redis/04-serviceaccounts.yaml
+  - redis/05-configmaps.yaml
+  - redis/06-services.yaml
+  
+  # Default example password
+  - redis/07-secret.yaml

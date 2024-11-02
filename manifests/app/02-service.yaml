@@ -13,7 +13,7 @@ spec:
     name: devops-project
   ports:
     - protocol: TCP
-      nodePort: 33333
+      nodePort: 31113
       name: web
       port: 80
       targetPort: 8000

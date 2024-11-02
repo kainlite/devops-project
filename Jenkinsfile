@@ -65,7 +65,7 @@ pipeline {
               export GIT_SHORT_SHA=`git rev-parse --short HEAD`;
               export EKS_CLUSTER_NAME=`aws eks list-clusters | jq ".clusters[0]" -r`
               aws eks update-kubeconfig --name ${EKS_CLUSTER_NAME} --region ${AWS_DEFAULT_REGION}
-              sed -i "s/replace_me/${GIT_SHORT_SHA}/" manifests/01-deployment.yaml
+              sed -i "s/replace_me/${GIT_SHORT_SHA}/" manifests/app/01-deployment.yaml
               kustomize build manifests/ | kubectl apply -f -
             '''
           }
