@@ -34,6 +34,8 @@ described in the following diagram, using DataDog we can collect metrics, traces
 * Configure additional agent 
   * Monitor RDS instance
   * Monitor Elasticache redis instance
+  * When using an in-cluster redis configuration
+    * Enable metrics exporter sidecar (prometheus) to expose metrics
 * Configure alerts using the metrics and information available, some examples:
   * When synthetics fails for some given period 
   * Too many errors (400s, 500s).

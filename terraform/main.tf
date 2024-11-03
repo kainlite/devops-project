@@ -46,6 +46,8 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   tags = local.tags
+
+  depends_on = [module.vpc]
 }
 
 module "rds" {
@@ -58,6 +60,8 @@ module "rds" {
   vpc_security_group_ids = [module.vpc.default_security_group_id]
 
   tags = local.tags
+
+  depends_on = [module.vpc]
 }
 
 module "redis" {
@@ -70,15 +74,6 @@ module "redis" {
   security_group_ids = [module.vpc.default_security_group_id]
 
   tags = local.tags
-}
 
-module "elb" {
-  source = "./modules/elb"
-
-  name = "${local.short_prefix}-elb"
-
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = flatten([module.vpc.public_subnets, module.vpc.private_subnets])
-
-  tags = local.tags
+  depends_on = [module.vpc]
 }
