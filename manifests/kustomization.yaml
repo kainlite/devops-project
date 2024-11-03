@@ -10,7 +10,9 @@ resources:
   # app/03-secrets.yaml
   
   # helm template redis oci://registry-1.docker.io/bitnamicharts/redis \ 
-  # --set cluster.enabled=false --set cluster.slaveCount=0 --set replica.replicaCount=0
+  # --set cluster.enabled=false --set cluster.slaveCount=0 --set replica.replicaCount=0 \
+  # --set master.persistence.enabled=false --set replica.persistence.enabled=false \ 
+  # --set replica.resourcesPreset=none --set master.resourcesPreset=none
   - redis/00-namespace.yaml
   - redis/01-statefulset.yaml
   - redis/02-netpol.yaml

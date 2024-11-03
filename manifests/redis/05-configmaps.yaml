@@ -30,7 +30,6 @@ data:
     rename-command FLUSHALL ""
     # End of replica configuration
 ---
-# Source: redis/templates/health-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -138,7 +137,6 @@ data:
     "$script_dir/ping_liveness_master.sh" $1 || exit_status=$?
     exit $exit_status
 ---
-# Source: redis/templates/scripts-configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:

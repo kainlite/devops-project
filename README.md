@@ -19,6 +19,7 @@ Some possible improvements for continuos delivery and deployment:
 * ArgoCD
   * ArgoCD Image Updater
   * Kargo (GitOps friendly)
+
 ![netdiagram](./assets/basic-diagram.png)
 
 ### Monitoring
