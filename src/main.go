@@ -253,7 +253,7 @@ func main() {
 			fmt.Fprintf(w, "Error 404")
 		} else {
 			logger(r)
-			fmt.Fprintf(w, "Hi Koronet Team.")
+			fmt.Fprintf(w, "Hi there")
 		}
 	})
 
